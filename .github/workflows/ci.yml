@@ -1,0 +1,56 @@
+name: CI - YaviBot Movil
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  frontend:
+    name: Validar Ionic / Angular
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: certi-matricula-app
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: certi-matricula-app/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Crear environment para CI
+        run: |
+          cp src/environments/environment.example.ts src/environments/environment.ts
+          cp src/environments/environment.prod.example.ts src/environments/environment.prod.ts
+
+      - name: Compilar proyecto Angular
+        run: npm run build
+
+  docker:
+    name: Validar Docker Compose
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Crear archivo .env de prueba
+        run: |
+          cp n8n-backend/.env.example n8n-backend/.env
+
+      - name: Validar Docker Compose
+        working-directory: n8n-backend
+        run: docker compose config
