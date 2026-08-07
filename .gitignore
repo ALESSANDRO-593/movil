@@ -1,0 +1,15 @@
+# Respaldos locales de PostgreSQL
+n8n-backend/db-backup/
+n8n-backend/yavirac_antes_limpieza.sql
+n8n-backend/yavirac_base_limpia.sql
+
+# Variables de entorno / secretos
+n8n-backend/.env
+
+# Environments locales con claves
+src/environments/environment.ts
+src/environments/environment.prod.ts
+
+# Environments locales del frontend
+certi-matricula-app/src/environments/environment.ts
+certi-matricula-app/src/environments/environment.prod.ts
