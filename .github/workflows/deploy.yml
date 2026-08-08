@@ -2,6 +2,7 @@ name: CD - Deploy YaviBot VPS
 
 on:
   workflow_dispatch:
+
   push:
     branches:
       - main
@@ -40,23 +41,35 @@ jobs:
         run: |
           ssh -i ~/.ssh/yavibot_vps \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << 'EOF'
-            set -e
 
-            cd /opt/yavibot/certi-matricula-app
+          set -e
 
-            docker build -t yavibot-frontend .
+          cd /opt/yavibot/certi-matricula-app
 
-            docker compose \
-              -f docker-compose.server.yml \
-              up -d --force-recreate
+          echo "Construyendo imagen Docker..."
+          docker build -t yavibot-frontend .
 
-            docker compose \
-              -f docker-compose.server.yml \
-              ps
+          echo "Recreando contenedor..."
+          docker compose \
+            -f docker-compose.server.yml \
+            up -d --force-recreate
 
-            curl -fsS \
-              https://app-161-97-100-110.nip.io \
-              > /dev/null
+          echo "Estado del contenedor:"
+          docker compose \
+            -f docker-compose.server.yml \
+            ps
 
-            echo "YaviBot desplegado correctamente"
+          echo "Comprobando YaviBot público..."
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --retry 5 \
+            --retry-delay 3 \
+            https://app-161-97-100-110.nip.io/chat \
+            > /dev/null
+
+          echo "✅ YaviBot desplegado correctamente"
+
           EOF
