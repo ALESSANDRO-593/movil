@@ -7,36 +7,36 @@
         "height": 320,
         "width": 420
       },
-      "id": "f1111111-1111-4111-8111-111111111111",
+      "id": "6402bf98-21da-4426-b5d0-d21cff65a2ff",
       "name": "Nota",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -280,
-        -220
+        -1232,
+        -176
       ]
     },
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "enviar-certificado-pdf",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
-        "options": {},
-        "authentication": "headerAuth"
+        "options": {}
       },
-      "id": "f2222222-2222-4222-8222-222222222222",
+      "id": "64388cd1-7057-441b-a4d7-fd2f3d39bcc0",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        0
+        -752,
+        48
       ],
       "webhookId": "enviar-certificado-pdf",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial Header Auth (X-Api-Key)"
+          "id": "2DZ4rVKO8WKxzYBC",
+          "name": "API Key App Certificado"
         }
       }
     },
@@ -47,20 +47,19 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "f2222222-2222-4222-8222-222222222223",
+      "id": "53391f32-48f7-4fe3-aa9c-cf461830917b",
       "name": "Webhook (OPTIONS)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        320
+        -752,
+        368
       ],
       "webhookId": "enviar-certificado-pdf-options"
     },
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "",
         "options": {
           "responseCode": 204,
           "responseHeaders": {
@@ -81,37 +80,36 @@
           }
         }
       },
-      "id": "f3333333-3333-4333-8333-333333333333",
+      "id": "ffd7c38c-1d92-4627-9ce5-c1377ae4d7a0",
       "name": "Responder: CORS preflight",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        460,
-        320
+        -496,
+        368
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT e.correo AS \"correoInstitucional\", e.nombres AS \"nombreCompleto\", cert.periodo_lectivo_nombre AS \"periodoActual\" FROM certificados cert JOIN qr_codigos qc ON qc.id = cert.qr_id JOIN estudiantes e ON e.id = cert.estudiante_id WHERE e.cedula = $1 AND qc.identificador = $2::uuid LIMIT 1",
         "options": {
           "queryReplacement": "={{ [ $json.body.cedula, $json.body.codigoUnico ] }}"
         }
       },
-      "id": "f4444444-4444-4444-8444-444444444444",
+      "id": "c624a01a-fb9f-4cee-861f-bd720205f6d1",
       "name": "Verificar Certificado (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        460,
-        0
+        -496,
+        48
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -121,7 +119,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -138,40 +137,39 @@
         },
         "options": {}
       },
-      "id": "f5555555-5555-4555-8555-555555555555",
+      "id": "39eb9505-b358-4440-ad2b-452f0ffd79f2",
       "name": "¿Certificado válido?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        720,
-        0
+        -240,
+        48
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT 1 AS ok FROM otp_codigos WHERE cedula = $1 AND usado = true AND creado_en > NOW() - INTERVAL '20 minutes' ORDER BY creado_en DESC LIMIT 1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.cedula ] }}"
         }
       },
-      "id": "fses0001-ses0-4ses-8ses-ses000000001",
+      "id": "74d23026-c0db-408f-b5c1-246b3a24bd98",
       "name": "Verificar Sesión Validada (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        980,
-        180
+        32,
+        224
       ],
       "alwaysOutputData": true,
-      "notes": "Exige un OTP usado=true en los últimos 20 min. El PDF que llega en el body es generado por el cliente y no se valida su contenido — sin esta verificación, cualquiera con (cedula, codigoUnico) de un certificado ya emitido (visible en el propio QR) podía hacer que el sistema reenviara un PDF arbitrario al correo institucional del estudiante, sin haber pasado por el OTP.",
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
-      }
+      },
+      "notes": "Exige un OTP usado=true en los últimos 20 min. El PDF que llega en el body es generado por el cliente y no se valida su contenido — sin esta verificación, cualquiera con (cedula, codigoUnico) de un certificado ya emitido (visible en el propio QR) podía hacer que el sistema reenviara un PDF arbitrario al correo institucional del estudiante, sin haber pasado por el OTP."
     },
     {
       "parameters": {
@@ -179,7 +177,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -196,13 +195,13 @@
         },
         "options": {}
       },
-      "id": "fses0002-ses0-4ses-8ses-ses000000002",
+      "id": "4c993df7-b547-4898-a73b-82db999823a6",
       "name": "¿Tiene sesión válida?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1240,
-        180
+        288,
+        224
       ]
     },
     {
@@ -221,26 +220,26 @@
           }
         }
       },
-      "id": "fses0003-ses0-4ses-8ses-ses000000003",
+      "id": "ad4ec8e3-bb08-468b-a3ad-e4ad2ffbde2d",
       "name": "Responder: Sin sesión válida",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        340
+        560,
+        384
       ]
     },
     {
       "parameters": {
         "jsCode": "const cedula = $('Webhook').item.json.body.cedula;\nconst pdfBase64 = $('Webhook').item.json.body.pdfBase64;\nconst certificado = $('Verificar Certificado (Postgres)').item.json;\n\nreturn [{\n  json: certificado,\n  binary: {\n    certificado: {\n      data: pdfBase64,\n      mimeType: 'application/pdf',\n      fileName: `certificado-matricula-${cedula}.pdf`\n    }\n  }\n}];"
       },
-      "id": "f6666666-6666-4666-8666-666666666666",
+      "id": "3e7e956e-df0d-4d30-bed8-031d1d263268",
       "name": "Adjuntar PDF (Binario)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        980,
-        -120
+        32,
+        -80
       ]
     },
     {
@@ -248,27 +247,27 @@
         "fromEmail": "mesadeayuda@yavirac.edu.ec",
         "toEmail": "={{ $json.correoInstitucional }}",
         "subject": "=Tu Certificado de Matrícula YAVIRAC — {{ $json.periodoActual }}",
-        "emailFormat": "text",
+        "text": "=🏫 INSTITUTO SUPERIOR TECNOLÓGICO \"YAVIRAC\"\n\n🎓 Tu Certificado de Matrícula\n\nEstimado/a {{ $json.nombreCompleto }},\n\nAdjunto encontrarás tu Certificado de Matrícula correspondiente al periodo lectivo {{ $json.periodoActual }}, en formato PDF con el membrete oficial del instituto.\n\nEl código QR incluido en el documento es único e irrepetible, y permite verificar la autenticidad de este certificado en el sistema institucional.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec",
         "options": {
           "fileAttachments": "certificado"
-        },
-        "text": "=🏫 INSTITUTO SUPERIOR TECNOLÓGICO \"YAVIRAC\"\n\n🎓 Tu Certificado de Matrícula\n\nEstimado/a {{ $json.nombreCompleto }},\n\nAdjunto encontrarás tu Certificado de Matrícula correspondiente al periodo lectivo {{ $json.periodoActual }}, en formato PDF con el membrete oficial del instituto.\n\nEl código QR incluido en el documento es único e irrepetible, y permite verificar la autenticidad de este certificado en el sistema institucional.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec"
+        }
       },
-      "id": "f7777777-7777-4777-8777-777777777777",
+      "id": "942168a2-3588-4f4a-b230-4169814dfdb2",
       "name": "Enviar PDF por Correo (SMTP)",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
       "position": [
-        1240,
-        -120
+        288,
+        -80
       ],
-      "notes": "CONFIGURAR: credenciales SMTP (Mailtrap para pruebas) en Settings > Credentials > SMTP.",
+      "webhookId": "3435c005-46ab-4837-9900-d16083e7883b",
       "credentials": {
         "smtp": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales SMTP (Mailtrap en pruebas)"
+          "id": "l6S9HOD6VVVrILaz",
+          "name": "SMTP account"
         }
-      }
+      },
+      "notes": "CONFIGURAR: credenciales SMTP (Mailtrap para pruebas) en Settings > Credentials > SMTP."
     },
     {
       "parameters": {
@@ -286,13 +285,13 @@
           }
         }
       },
-      "id": "f8888888-8888-4888-8888-888888888888",
+      "id": "fd38d77e-65f4-4572-95d0-e8bee571fee5",
       "name": "Responder: Enviado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        -120
+        560,
+        -80
       ]
     },
     {
@@ -311,16 +310,17 @@
           }
         }
       },
-      "id": "f9999999-9999-4999-8999-999999999999",
+      "id": "17a4a75b-5a79-4552-97ea-b1f8791b57b3",
       "name": "Responder: No encontrado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        980,
-        160
+        32,
+        96
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -425,9 +425,18 @@
       ]
     }
   },
-  "pinData": {},
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "active": true
+  "versionId": "ee2c9ae8-e2e2-41f9-be52-f3d913dbd611",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"
+  },
+  "nodeGroups": [],
+  "id": "n0yM0c9IgCRdfKui",
+  "tags": []
 }

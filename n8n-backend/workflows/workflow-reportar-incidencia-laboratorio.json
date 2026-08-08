@@ -7,36 +7,36 @@
         "height": 480,
         "width": 460
       },
-      "id": "i1111111-1111-4111-8111-111111111111",
+      "id": "e36ddce5-f804-4429-99a1-9c8c8c546fad",
       "name": "Nota",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -280,
-        -260
+        -2304,
+        160
       ]
     },
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "reportar-incidencia-laboratorio",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
-        "options": {},
-        "authentication": "headerAuth"
+        "options": {}
       },
-      "id": "i2222222-2222-4222-8222-222222222222",
+      "id": "6d6fa6e7-719c-4dd9-83f9-b26a76d6a808",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        0
+        -1824,
+        432
       ],
       "webhookId": "reportar-incidencia-laboratorio",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial Header Auth (X-Api-Key)"
+          "id": "2DZ4rVKO8WKxzYBC",
+          "name": "API Key App Certificado"
         }
       }
     },
@@ -47,20 +47,19 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "i3333333-3333-4333-8333-333333333333",
+      "id": "be23a072-c7ec-41ca-8f52-1085d7acc0e5",
       "name": "Webhook (OPTIONS)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        500
+        -1824,
+        928
       ],
       "webhookId": "reportar-incidencia-laboratorio-options"
     },
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "",
         "options": {
           "responseCode": 204,
           "responseHeaders": {
@@ -81,37 +80,36 @@
           }
         }
       },
-      "id": "i4444444-4444-4444-8444-444444444444",
+      "id": "cd0f7b52-4982-4b10-b3e7-a2aaa16ae8f1",
       "name": "Responder: CORS preflight",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        460,
-        500
+        -1568,
+        928
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT d.cedula, d.nombre_docente AS \"nombreDocente\", up.id AS \"profesorId\" FROM docentes d JOIN usuarios_panel up ON up.cedula = d.cedula JOIN roles r ON r.id = up.rol_id AND r.codigo = 'PROFESOR' WHERE d.cedula = $1",
         "options": {
           "queryReplacement": "={{ [ $json.body.cedula ] }}"
         }
       },
-      "id": "i5555555-5555-4555-8555-555555555555",
+      "id": "f781e42b-07a6-4963-873f-7a4bb2ad56ca",
       "name": "Buscar Docente Válido (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        460,
-        0
+        -1568,
+        432
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -121,7 +119,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -138,40 +137,39 @@
         },
         "options": {}
       },
-      "id": "i6666666-6666-4666-8666-666666666666",
+      "id": "6593c768-b0eb-47ad-b351-0053fd43fdec",
       "name": "¿Es docente válido?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        720,
-        0
+        -1296,
+        432
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT 1 AS ok FROM otp_codigos WHERE cedula = $1 AND usado = true AND creado_en > NOW() - INTERVAL '20 minutes' ORDER BY creado_en DESC LIMIT 1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.cedula ] }}"
         }
       },
-      "id": "ises0001-ses0-4ses-8ses-ses000000001",
+      "id": "056c3624-a12b-4518-bae1-72f538a470fa",
       "name": "Verificar Sesión Validada (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        980,
-        180
+        -1040,
+        608
       ],
       "alwaysOutputData": true,
-      "notes": "Exige un OTP usado=true en los últimos 20 min para esta cédula (mismo patrón que resetear-contrasena-correo.json) — sin esto, cualquiera con la cédula y la X-Api-Key podía reportar la incidencia saltándose el OTP.",
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
-      }
+      },
+      "notes": "Exige un OTP usado=true en los últimos 20 min para esta cédula (mismo patrón que resetear-contrasena-correo.json) — sin esto, cualquiera con la cédula y la X-Api-Key podía reportar la incidencia saltándose el OTP."
     },
     {
       "parameters": {
@@ -179,7 +177,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -196,13 +195,13 @@
         },
         "options": {}
       },
-      "id": "ises0002-ses0-4ses-8ses-ses000000002",
+      "id": "6e83d006-68ea-4ed4-b05d-c028cfc39ae8",
       "name": "¿Tiene sesión válida?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1240,
-        180
+        -784,
+        608
       ]
     },
     {
@@ -221,37 +220,36 @@
           }
         }
       },
-      "id": "ises0003-ses0-4ses-8ses-ses000000003",
+      "id": "fe09ff22-048a-4738-8f6c-7d378ffa16ca",
       "name": "Responder: Sin sesión válida",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        340
+        -528,
+        768
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT id FROM laboratorios WHERE codigo = $1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.laboratorioCodigo ] }}"
         }
       },
-      "id": "i7777777-7777-4777-8777-777777777777",
+      "id": "06f88918-c50f-4b77-a13d-3d639a28b5f4",
       "name": "Buscar Laboratorio (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        980,
-        -180
+        -1040,
+        240
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -261,7 +259,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -278,35 +277,34 @@
         },
         "options": {}
       },
-      "id": "i8888888-8888-4888-8888-888888888888",
+      "id": "baaf39fc-c8c5-4372-9ef9-d551e0f91893",
       "name": "¿Laboratorio válido?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1240,
-        -180
+        -784,
+        240
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT up.id AS \"responsableId\", up.correo AS \"correoResponsable\", up.nombres AS \"nombreResponsable\" FROM asignaciones_responsables ar JOIN usuarios_panel up ON up.id = ar.usuario_id JOIN tipos_solicitud ts ON ts.id = ar.tipo_solicitud_id AND ts.codigo = 'ALERTA_LAB' WHERE ar.vigente = true LIMIT 1",
         "options": {}
       },
-      "id": "i9999999-9999-4999-8999-999999999999",
+      "id": "1144faeb-62af-4899-ac07-c11deeaf4d30",
       "name": "Buscar Responsable (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1500,
-        -180
+        -528,
+        240
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -316,7 +314,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -333,191 +332,185 @@
         },
         "options": {}
       },
-      "id": "ihhhhhh1-hhhh-4hhh-8hhh-hhhhhhhhhhh1",
+      "id": "e91b2417-9f38-4f9d-b2c9-302f9f322f5c",
       "name": "¿Tiene foto adjunta?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1760,
-        -180
+        -256,
+        240
       ]
     },
     {
       "parameters": {
         "jsCode": "const body = $('Webhook').item.json.body;\nconst mime = (body.fotoMime === 'image/png') ? 'image/png' : 'image/jpeg';\nconst extension = mime === 'image/png' ? 'png' : 'jpg';\nconst nombreArchivo = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${extension}`;\nconst tamanoBytes = Buffer.from(body.fotoBase64, 'base64').length;\n\nreturn [{\n  json: { nombreArchivo, mime, tamanoBytes },\n  binary: {\n    data: {\n      data: body.fotoBase64,\n      mimeType: mime,\n      fileName: nombreArchivo\n    }\n  }\n}];"
       },
-      "id": "ihhhhhh2-hhhh-4hhh-8hhh-hhhhhhhhhhh2",
+      "id": "4af5fffd-d49d-43ed-a83c-70914dc5e72f",
       "name": "Preparar Foto (Binario)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2020,
-        -420
+        0,
+        0
       ]
     },
     {
       "parameters": {
         "operation": "write",
         "fileName": "={{ \"/data/storage/uploads/\" + $json.nombreArchivo }}",
-        "dataPropertyName": "data",
         "options": {}
       },
-      "id": "ihhhhhh3-hhhh-4hhh-8hhh-hhhhhhhhhhh3",
+      "id": "2243b7c3-c942-4291-bb6b-36cb62ee566a",
       "name": "Escribir Foto en Disco",
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
-      "onError": "continueRegularOutput",
       "position": [
-        2280,
-        -420
+        272,
+        0
       ],
+      "onError": "continueRegularOutput",
       "notes": "onError=continueRegularOutput: la foto es opcional — si falla el guardado en disco (ej. disco lleno), no debe perderse el reporte de incidencia completo. 'Foto Guardada' resuelve adjuntoId a null si esta rama falló."
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO adjuntos (tipo, ruta, mime, tamano_bytes) VALUES ('foto_alerta', $1, $2, $3) RETURNING id",
         "options": {
           "queryReplacement": "={{ [ \"storage/uploads/\" + $('Preparar Foto (Binario)').item.json.nombreArchivo, $('Preparar Foto (Binario)').item.json.mime, $('Preparar Foto (Binario)').item.json.tamanoBytes ] }}"
         }
       },
-      "id": "ihhhhhh4-hhhh-4hhh-8hhh-hhhhhhhhhhh4",
+      "id": "62b258c3-49db-4fe1-869c-1cdda6c99368",
       "name": "Insertar Adjunto (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
-      "onError": "continueRegularOutput",
       "position": [
-        2540,
-        -420
+        528,
+        0
       ],
-      "notes": "onError=continueRegularOutput: mismo criterio que 'Escribir Foto en Disco' — un fallo al registrar el adjunto no debe tumbar el reporte de incidencia.",
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
-      }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "onError=continueRegularOutput: mismo criterio que 'Escribir Foto en Disco' — un fallo al registrar el adjunto no debe tumbar el reporte de incidencia."
     },
     {
       "parameters": {
         "jsCode": "// $json.id solo viene presente si \"Escribir Foto en Disco\" e \"Insertar Adjunto\"\n// se completaron de verdad; si cualquiera de las dos falló (onError=continueRegularOutput),\n// $json no trae 'id' y se guarda el reporte igual, sin foto.\nreturn [{ json: { adjuntoId: $json.id ?? null } }];"
       },
-      "id": "ihhhhhh5-hhhh-4hhh-8hhh-hhhhhhhhhhh5",
+      "id": "83a2b8db-ac83-472e-9eb2-9919e60b1e7e",
       "name": "Foto Guardada",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2800,
-        -420
+        784,
+        0
       ]
     },
     {
       "parameters": {
         "jsCode": "return [{ json: { adjuntoId: null } }];"
       },
-      "id": "ihhhhhh6-hhhh-4hhh-8hhh-hhhhhhhhhhh6",
+      "id": "ecbee1f0-7a37-4689-8810-842935bc71fc",
       "name": "Sin Foto",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2020,
-        -80
+        0,
+        352
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO alertas (laboratorio_id, descripcion, profesor_id, responsable_id, adjunto_id) VALUES ($1, $2, $3, $4, $5) RETURNING id, creado_en",
         "options": {
           "queryReplacement": "={{ [$('Buscar Laboratorio (Postgres)').item.json.id, $('Webhook').item.json.body.descripcion, $('Buscar Docente Válido (Postgres)').item.json.profesorId, $('Buscar Responsable (Postgres)').item.json.responsableId ?? null, $json.adjuntoId] }}"
         }
       },
-      "id": "iaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "id": "3c4a40d9-bdc8-42e2-8f0d-f18e00880888",
       "name": "Insertar Alerta (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3060,
-        -180
+        1040,
+        240
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "UPDATE alertas SET codigo = 'AL-' || LPAD(id::text, 6, '0') WHERE id = $1 RETURNING id, codigo, creado_en",
         "options": {
           "queryReplacement": "={{ [ $json.id ] }}"
         }
       },
-      "id": "ibbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "id": "fa814b76-3899-43f5-9e04-2211ec96204d",
       "name": "Generar Código (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3320,
-        -180
+        1312,
+        240
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO alerta_historial (alerta_id, estado_anterior, estado_nuevo, usuario_id) VALUES ($1, NULL, 'Pendiente', $2)",
         "options": {
           "queryReplacement": "={{ [$json.id, $('Buscar Docente Válido (Postgres)').item.json.profesorId] }}"
         }
       },
-      "id": "icccccc1-cccc-4ccc-8ccc-ccccccccccc1",
+      "id": "8451b517-0a62-4685-93c7-19231ffb3bfb",
       "name": "Registrar Historial (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3580,
-        -180
+        1568,
+        240
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO eventos (tipo, payload, origen) VALUES ('AlertaCreada', $1::jsonb, 'chatbot')",
         "options": {
           "queryReplacement": "={{ [ JSON.stringify({ codigo: $('Generar Código (Postgres)').item.json.codigo, alerta_id: String($('Generar Código (Postgres)').item.json.id) }) ] }}"
         }
       },
-      "id": "icccccc2-cccc-4ccc-8ccc-ccccccccccc2",
+      "id": "6e11f5bf-e114-4ab5-bbde-1c0027d6f784",
       "name": "Registrar Evento (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3840,
-        -180
+        1824,
+        240
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -525,13 +518,13 @@
       "parameters": {
         "jsCode": "const alerta = $('Generar Código (Postgres)').item.json;\nconst fecha = new Date(alerta.creado_en);\nconst fechaReporte = fecha.toLocaleDateString('es-EC', {\n  year: 'numeric', month: 'long', day: '2-digit', timeZone: 'America/Guayaquil'\n});\n\nreturn [{\n  json: {\n    codigo: alerta.codigo,\n    laboratorio: $('Webhook').item.json.body.laboratorioCodigo,\n    descripcion: $('Webhook').item.json.body.descripcion,\n    estado: 'Pendiente',\n    fechaReporte,\n    tieneFoto: !!$('Webhook').item.json.body.fotoBase64,\n    correoResponsable: $('Buscar Responsable (Postgres)').item.json.correoResponsable ?? null,\n    nombreResponsable: $('Buscar Responsable (Postgres)').item.json.nombreResponsable ?? null,\n    nombreDocente: $('Buscar Docente Válido (Postgres)').item.json.nombreDocente\n  }\n}];"
       },
-      "id": "idddddd1-dddd-4ddd-8ddd-ddddddddddd1",
+      "id": "a96b6023-2ee9-48ec-9cfa-2873f8e90e4a",
       "name": "Formatear Respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4100,
-        -180
+        2080,
+        240
       ]
     },
     {
@@ -540,7 +533,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -557,13 +551,13 @@
         },
         "options": {}
       },
-      "id": "idddddd2-dddd-4ddd-8ddd-ddddddddddd2",
+      "id": "e0419bbb-429b-4f39-9329-42b448c35685",
       "name": "¿Tiene responsable con correo?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        4360,
-        60
+        2352,
+        480
       ]
     },
     {
@@ -572,7 +566,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -589,86 +584,85 @@
         },
         "options": {}
       },
-      "id": "ihhhhhh8-hhhh-4hhh-8hhh-hhhhhhhhhhh8",
+      "id": "f88ab69f-5bf2-4149-afd3-7ab39ec2c169",
       "name": "¿Adjuntar foto al correo?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        4620,
-        60
+        2608,
+        480
       ]
     },
     {
       "parameters": {
-        "operation": "read",
         "fileSelector": "={{ \"/data/storage/uploads/\" + $('Preparar Foto (Binario)').item.json.nombreArchivo }}",
         "options": {
           "dataPropertyName": "foto"
         }
       },
-      "id": "ihhhhhh9-hhhh-4hhh-8hhh-hhhhhhhhhhh9",
+      "id": "a15d5343-26d8-4394-b786-ec244da61dcd",
       "name": "Leer Foto en Disco",
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
-      "onError": "continueRegularOutput",
       "position": [
-        4880,
-        -60
-      ]
+        2864,
+        368
+      ],
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "fromEmail": "mesadeayuda@yavirac.edu.ec",
         "toEmail": "={{ $('Formatear Respuesta').item.json.correoResponsable }}",
         "subject": "=Nueva incidencia de laboratorio — {{ $('Formatear Respuesta').item.json.codigo }}",
-        "emailFormat": "text",
         "text": "=🔬 INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO \"YAVIRAC\"\n\n⚠️ Nueva incidencia de laboratorio\n\nEstimado/a {{ $('Formatear Respuesta').item.json.nombreResponsable }},\n\nEl/la docente {{ $('Formatear Respuesta').item.json.nombreDocente }} reportó una nueva incidencia:\n\nCódigo: {{ $('Formatear Respuesta').item.json.codigo }}\nLaboratorio: {{ $('Formatear Respuesta').item.json.laboratorio }}\nDescripción: {{ $('Formatear Respuesta').item.json.descripcion }}\nFecha: {{ $('Formatear Respuesta').item.json.fechaReporte }}\n\n📷 Se adjunta una foto de la incidencia.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico de Turismo y Patrimonio \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec",
         "options": {
           "fileAttachments": "foto"
         }
       },
-      "id": "ihhhhhh10-hhhh-4hhh-8hhh-hhhhhhhhhh10",
+      "id": "0e7e3470-45c1-4060-a13f-1bcf3767e75a",
       "name": "Enviar Aviso a Responsable (Correo con foto)",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "onError": "continueRegularOutput",
       "position": [
-        5140,
-        -60
+        3120,
+        368
       ],
-      "notes": "CONFIGURAR: credenciales SMTP. onError=continueRegularOutput: no debe afectar el reporte ya guardado si el correo falla.",
+      "webhookId": "1ea01413-b102-4203-8278-79f77dbc10fc",
       "credentials": {
         "smtp": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial SMTP (Mailtrap en pruebas)"
+          "id": "l6S9HOD6VVVrILaz",
+          "name": "SMTP account"
         }
-      }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "CONFIGURAR: credenciales SMTP. onError=continueRegularOutput: no debe afectar el reporte ya guardado si el correo falla."
     },
     {
       "parameters": {
         "fromEmail": "mesadeayuda@yavirac.edu.ec",
         "toEmail": "={{ $json.correoResponsable }}",
         "subject": "=Nueva incidencia de laboratorio — {{ $json.codigo }}",
-        "emailFormat": "text",
         "text": "=🔬 INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO \"YAVIRAC\"\n\n⚠️ Nueva incidencia de laboratorio\n\nEstimado/a {{ $json.nombreResponsable }},\n\nEl/la docente {{ $json.nombreDocente }} reportó una nueva incidencia:\n\nCódigo: {{ $json.codigo }}\nLaboratorio: {{ $json.laboratorio }}\nDescripción: {{ $json.descripcion }}\nFecha: {{ $json.fechaReporte }}\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico de Turismo y Patrimonio \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec",
         "options": {}
       },
-      "id": "idddddd3-dddd-4ddd-8ddd-ddddddddddd3",
+      "id": "aaf52efc-7664-4f92-9a8c-22309d79ced4",
       "name": "Enviar Aviso a Responsable (Correo)",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "onError": "continueRegularOutput",
       "position": [
-        4880,
-        200
+        2864,
+        624
       ],
-      "notes": "CONFIGURAR: credenciales SMTP. onError=continueRegularOutput: no debe afectar el reporte ya guardado si el correo falla.",
+      "webhookId": "1a3af84d-30f7-4d0c-9772-aac6652639ac",
       "credentials": {
         "smtp": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial SMTP (Mailtrap en pruebas)"
+          "id": "l6S9HOD6VVVrILaz",
+          "name": "SMTP account"
         }
-      }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "CONFIGURAR: credenciales SMTP. onError=continueRegularOutput: no debe afectar el reporte ya guardado si el correo falla."
     },
     {
       "parameters": {
@@ -686,13 +680,13 @@
           }
         }
       },
-      "id": "ieeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "id": "6d3f3ce0-7964-4ab4-994f-0ecc12289aeb",
       "name": "Responder: Reporte creado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        4360,
-        -180
+        2352,
+        240
       ]
     },
     {
@@ -711,13 +705,13 @@
           }
         }
       },
-      "id": "ifffffff-ffff-4fff-8fff-ffffffffffff",
+      "id": "14dee189-2ea6-4bf2-97e1-9b1b5a97f032",
       "name": "Responder: Laboratorio inválido",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        160
+        -528,
+        592
       ]
     },
     {
@@ -736,16 +730,17 @@
           }
         }
       },
-      "id": "ig111111-1111-4111-8111-111111111111",
+      "id": "850a8364-2930-4a57-abf6-8a591869f08a",
       "name": "Responder: Docente no encontrado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        980,
-        220
+        -1040,
+        816
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -1008,8 +1003,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "¿Adjuntar foto al correo?": {
@@ -1042,9 +1036,18 @@
       ]
     }
   },
-  "pinData": {},
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "active": true
+  "versionId": "369bd13c-3c9b-46ea-abcb-e032d301a49e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"
+  },
+  "nodeGroups": [],
+  "id": "puzoOmewjxeNX6eV",
+  "tags": []
 }

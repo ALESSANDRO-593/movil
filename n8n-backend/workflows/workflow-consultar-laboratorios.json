@@ -7,36 +7,36 @@
         "height": 220,
         "width": 360
       },
-      "id": "h1111111-1111-4111-8111-111111111111",
+      "id": "c07b3599-53b8-4ba1-905e-7c88008833c3",
       "name": "Nota",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -220,
-        -140
+        0,
+        0
       ]
     },
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "consultar-laboratorios",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
-        "options": {},
-        "authentication": "headerAuth"
+        "options": {}
       },
-      "id": "h2222222-2222-4222-8222-222222222222",
+      "id": "de0cf314-e328-44a2-80b3-4b9a4b2ac308",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        0
+        432,
+        144
       ],
       "webhookId": "consultar-laboratorios",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial Header Auth (X-Api-Key)"
+          "id": "2DZ4rVKO8WKxzYBC",
+          "name": "API Key App Certificado"
         }
       }
     },
@@ -47,20 +47,19 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "h3333333-3333-4333-8333-333333333333",
+      "id": "21e1bfa0-6415-476c-b533-48deba9cfd9a",
       "name": "Webhook (OPTIONS)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        300
+        432,
+        448
       ],
       "webhookId": "consultar-laboratorios-options"
     },
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "",
         "options": {
           "responseCode": 204,
           "responseHeaders": {
@@ -81,34 +80,33 @@
           }
         }
       },
-      "id": "h4444444-4444-4444-8444-444444444444",
+      "id": "1f81df73-ef37-4e0d-84aa-5c1f05cc3ba1",
       "name": "Responder: CORS preflight",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        460,
-        300
+        688,
+        448
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT codigo, nombre FROM laboratorios ORDER BY nombre",
         "options": {}
       },
-      "id": "h5555555-5555-4555-8555-555555555555",
+      "id": "e800a919-a20a-484c-9277-82f2bba5af32",
       "name": "Buscar Laboratorios (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        460,
-        0
+        688,
+        144
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -116,13 +114,13 @@
       "parameters": {
         "jsCode": "const laboratorios = $input.all().map(item => ({\n  codigo: item.json.codigo,\n  nombre: item.json.nombre\n}));\n\nreturn [{ json: { laboratorios } }];"
       },
-      "id": "h6666666-6666-4666-8666-666666666666",
+      "id": "4eeca3f6-1cb5-4ffb-a097-fbd5e52ecdd0",
       "name": "Formatear Respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        720,
-        0
+        944,
+        144
       ]
     },
     {
@@ -141,16 +139,17 @@
           }
         }
       },
-      "id": "h7777777-7777-4777-8777-777777777777",
+      "id": "6839d7f5-696d-4844-afc7-d8f9b52378c1",
       "name": "Responder: Laboratorios",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        980,
-        0
+        1200,
+        144
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -197,9 +196,18 @@
       ]
     }
   },
-  "pinData": {},
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "active": true
+  "versionId": "683d3f0c-0abf-4fe5-bc32-07d4d9e017b8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"
+  },
+  "nodeGroups": [],
+  "id": "KhgKUJI0qik4t9Sr",
+  "tags": []
 }

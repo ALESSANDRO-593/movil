@@ -7,36 +7,36 @@
         "height": 300,
         "width": 380
       },
-      "id": "c1111111-1111-4111-8111-111111111111",
+      "id": "a5a9e972-0c80-4c8e-b013-12df3c2632ae",
       "name": "Nota",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -220,
-        -160
+        -1200,
+        304
       ]
     },
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "enviar-ticket-verificacion",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
-        "options": {},
-        "authentication": "headerAuth"
+        "options": {}
       },
-      "id": "c2222222-2222-4222-8222-222222222222",
+      "id": "67b8f9e7-27c7-4390-b7a4-9305611d0500",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        0
+        -784,
+        464
       ],
       "webhookId": "enviar-ticket-verificacion",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial Header Auth (X-Api-Key)"
+          "id": "2DZ4rVKO8WKxzYBC",
+          "name": "API Key App Certificado"
         }
       }
     },
@@ -47,20 +47,19 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "caaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "id": "ec5eb95e-7b92-46e3-b8d8-7079b7bb8e83",
       "name": "Webhook (OPTIONS)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        320
+        -784,
+        784
       ],
       "webhookId": "enviar-ticket-verificacion-options"
     },
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "",
         "options": {
           "responseCode": 204,
           "responseHeaders": {
@@ -81,40 +80,39 @@
           }
         }
       },
-      "id": "cbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "id": "d249418c-291a-4bac-8993-0e11c024d9bc",
       "name": "Responder: CORS preflight",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        460,
-        320
+        -528,
+        784
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT 1 AS ok FROM otp_codigos WHERE cedula = $1 AND creado_en > NOW() - INTERVAL '60 seconds' ORDER BY creado_en DESC LIMIT 1",
         "options": {
           "queryReplacement": "={{ [ $json.body.cedula ] }}"
         }
       },
-      "id": "cool0001-cool-4ool-8ool-cool00000001",
+      "id": "5a3e588d-d403-4733-85e6-445bd655c134",
       "name": "Verificar Cooldown OTP (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        460,
-        -300
+        -528,
+        160
       ],
       "alwaysOutputData": true,
-      "notes": "Sin esto, este endpoint no tenía CAPTCHA ni límite de frecuencia propio: cualquiera con la X-Api-Key podía hacer que el sistema mandara el código OTP repetidamente al correo institucional de cualquier cédula conocida (spam). Cooldown de 60s entre envíos por cédula.",
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
-      }
+      },
+      "notes": "Sin esto, este endpoint no tenía CAPTCHA ni límite de frecuencia propio: cualquiera con la X-Api-Key podía hacer que el sistema mandara el código OTP repetidamente al correo institucional de cualquier cédula conocida (spam). Cooldown de 60s entre envíos por cédula."
     },
     {
       "parameters": {
@@ -122,7 +120,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -139,13 +138,13 @@
         },
         "options": {}
       },
-      "id": "cool0002-cool-4ool-8ool-cool00000002",
+      "id": "44315d3d-aa93-4a8d-81ac-290f8ac466cc",
       "name": "¿Puede enviar OTP ahora?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        720,
-        -300
+        -256,
+        160
       ]
     },
     {
@@ -164,37 +163,36 @@
           }
         }
       },
-      "id": "cool0003-cool-4ool-8ool-cool00000003",
+      "id": "4584fd32-e37b-4ec0-88d5-26371595dc96",
       "name": "Responder: Cooldown activo",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        980,
-        -460
+        0,
+        0
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT cedula, nombres, correo AS \"correoInstitucional\" FROM estudiantes WHERE cedula = $1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.cedula ] }}"
         }
       },
-      "id": "c3333333-3333-4333-8333-333333333333",
+      "id": "a744b35f-25c1-461c-9a22-06726a940f48",
       "name": "Buscar Estudiante (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        460,
-        0
+        -528,
+        464
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -204,7 +202,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -221,49 +220,48 @@
         },
         "options": {}
       },
-      "id": "c4444444-4444-4444-8444-444444444444",
+      "id": "2c6299b5-79ff-422a-8cb0-5f49b55374c1",
       "name": "¿Existe el estudiante?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        720,
-        0
+        -256,
+        464
       ]
     },
     {
       "parameters": {
         "jsCode": "const ticket = Math.floor(100000 + Math.random() * 900000).toString();\n\nconst usuario = $json.correoInstitucional.split('@')[0];\nconst dominio = $json.correoInstitucional.split('@')[1];\nconst visible = usuario.slice(0, 2);\nconst correoEnmascarado = `${visible}${'*'.repeat(Math.max(usuario.length - 2, 3))}@${dominio}`;\n\nreturn [{\n  json: {\n    ...$json,\n    ticket,\n    correoEnmascarado\n  }\n}];"
       },
-      "id": "c5555555-5555-4555-8555-555555555555",
+      "id": "f25fd162-d004-450e-bf64-be8cc6fe28c0",
       "name": "Generar Ticket",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        980,
-        -120
+        0,
+        352
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO otp_codigos (cedula, correo, codigo_hash, canal, expira_en) VALUES ($1, $2, encode(digest($3, 'sha256'), 'hex'), 'chatbot', NOW() + INTERVAL '10 minutes')",
         "options": {
           "queryReplacement": "={{ [$json.cedula, $json.correoInstitucional, $json.ticket] }}"
         }
       },
-      "id": "c6666666-6666-4666-8666-666666666666",
+      "id": "908b1d45-a4b3-43cf-8150-38fc2112323c",
       "name": "Guardar Ticket (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1240,
-        -120
+        272,
+        352
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -272,24 +270,25 @@
         "fromEmail": "mesadeayuda@yavirac.edu.ec",
         "toEmail": "={{ $('Generar Ticket').item.json.correoInstitucional }}",
         "subject": "Tu código de verificación - YaviBot",
-        "emailFormat": "text",
-        "text": "=🏫 INSTITUTO SUPERIOR TECNOLÓGICO \"YAVIRAC\"\n\nHola {{ $('Generar Ticket').item.json.nombres }},\n\nEste es tu código de verificación para continuar en YaviBot:\n\n   🔐  {{ $('Generar Ticket').item.json.ticket }}\n\nEste código expira en 10 minutos. Si tú no lo solicitaste, puedes ignorar este correo con confianza.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec"
+        "text": "=🏫 INSTITUTO SUPERIOR TECNOLÓGICO \"YAVIRAC\"\n\nHola {{ $('Generar Ticket').item.json.nombres }},\n\nEste es tu código de verificación para continuar en YaviBot:\n\n   🔐  {{ $('Generar Ticket').item.json.ticket }}\n\nEste código expira en 10 minutos. Si tú no lo solicitaste, puedes ignorar este correo con confianza.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec",
+        "options": {}
       },
-      "id": "c7777777-7777-4777-8777-777777777777",
+      "id": "56099a2d-5b92-4fc9-ae14-2f2f03d48eaf",
       "name": "Enviar Correo (SMTP)",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
       "position": [
-        1500,
-        -120
+        528,
+        352
       ],
-      "notes": "Para pruebas: configurar credenciales SMTP de Mailtrap (Settings > Credentials > SMTP, con el host/puerto/usuario/password del sandbox de Mailtrap). Reemplazar id REEMPLAZAR.",
+      "webhookId": "83ca2377-1386-41ea-b3aa-3aca8ab7b572",
       "credentials": {
         "smtp": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales SMTP (Mailtrap en pruebas)"
+          "id": "l6S9HOD6VVVrILaz",
+          "name": "SMTP account"
         }
-      }
+      },
+      "notes": "Para pruebas: configurar credenciales SMTP de Mailtrap (Settings > Credentials > SMTP, con el host/puerto/usuario/password del sandbox de Mailtrap). Reemplazar id REEMPLAZAR."
     },
     {
       "parameters": {
@@ -307,37 +306,36 @@
           }
         }
       },
-      "id": "c8888888-8888-4888-8888-888888888888",
+      "id": "c682f7cb-a80d-4484-98b6-6a6002c3f81a",
       "name": "Responder: Ticket enviado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1760,
-        -120
+        784,
+        352
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT cedula, nombre_docente AS nombres, correo AS \"correoInstitucional\" FROM docentes WHERE cedula = $1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.cedula ] }}"
         }
       },
-      "id": "cddddddd-dddd-4ddd-8ddd-ddddddddddd1",
+      "id": "4cc8f7c8-80c4-4277-836a-f86a75c1231a",
       "name": "Buscar Docente (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        980,
-        60
+        0,
+        528
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -347,7 +345,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -364,13 +363,13 @@
         },
         "options": {}
       },
-      "id": "cddddddd-dddd-4ddd-8ddd-ddddddddddd2",
+      "id": "29a778dd-fc22-41e4-b18c-01808a94bbc6",
       "name": "¿Existe el docente?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1240,
-        60
+        272,
+        528
       ]
     },
     {
@@ -389,16 +388,17 @@
           }
         }
       },
-      "id": "c9999999-9999-4999-8999-999999999999",
+      "id": "088fff1b-0094-4752-9fc1-cde8a0b2b7f6",
       "name": "Responder: No encontrado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        160
+        528,
+        624
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -543,9 +543,18 @@
       ]
     }
   },
-  "pinData": {},
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "active": true
+  "versionId": "9dddca90-0272-4e9d-b069-c26caf6ae981",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"
+  },
+  "nodeGroups": [],
+  "id": "AuKfaov84jlUs0CM",
+  "tags": []
 }

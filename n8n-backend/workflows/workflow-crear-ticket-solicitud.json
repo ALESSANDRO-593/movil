@@ -7,36 +7,36 @@
         "height": 360,
         "width": 420
       },
-      "id": "f1111111-1111-4111-8111-111111111111",
+      "id": "15e9e02a-a4d9-4828-bf1b-3d0ef7e0205b",
       "name": "Nota",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -280,
-        -280
+        0,
+        0
       ]
     },
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "crear-ticket-solicitud",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
-        "options": {},
-        "authentication": "headerAuth"
+        "options": {}
       },
-      "id": "f2222222-2222-4222-8222-222222222222",
+      "id": "eefe3d59-b4a5-4bb5-82bd-b10aa80923d4",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        0
+        480,
+        288
       ],
       "webhookId": "crear-ticket-solicitud",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial Header Auth (X-Api-Key)"
+          "id": "2DZ4rVKO8WKxzYBC",
+          "name": "API Key App Certificado"
         }
       }
     },
@@ -47,20 +47,19 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "fedcba98-7654-4321-8fed-cba987654321",
+      "id": "6a47adef-2c49-4c2b-bf12-a5a835185823",
       "name": "Webhook (OPTIONS)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        500
+        480,
+        784
       ],
       "webhookId": "crear-ticket-solicitud-options"
     },
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "",
         "options": {
           "responseCode": 204,
           "responseHeaders": {
@@ -81,37 +80,36 @@
           }
         }
       },
-      "id": "fedcba98-7654-4321-8fed-cba987654322",
+      "id": "8bef7f8f-bbe0-4e35-8396-556f0475c407",
       "name": "Responder: CORS preflight",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        460,
-        500
+        752,
+        784
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT e.id AS estudiante_id, e.cedula, e.nombres, e.correo AS \"correoInstitucional\", e.carrera_id, c.nombre AS carrera, e.nivel, e.paralelo FROM estudiantes e JOIN carreras c ON c.id = e.carrera_id WHERE e.cedula = $1",
         "options": {
           "queryReplacement": "={{ [ $json.body.cedula ] }}"
         }
       },
-      "id": "f3333333-3333-4333-8333-333333333333",
+      "id": "1ff383ed-a925-4c83-bc49-e9f49e2b9942",
       "name": "Buscar Estudiante (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        460,
-        0
+        752,
+        288
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -121,7 +119,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -138,40 +137,39 @@
         },
         "options": {}
       },
-      "id": "f4444444-4444-4444-8444-444444444444",
+      "id": "717961b2-10c0-46ef-810c-035581175ccb",
       "name": "¿Existe el estudiante?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        720,
-        0
+        1008,
+        288
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT 1 AS ok FROM otp_codigos WHERE cedula = $1 AND usado = true AND creado_en > NOW() - INTERVAL '20 minutes' ORDER BY creado_en DESC LIMIT 1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.cedula ] }}"
         }
       },
-      "id": "fses0001-ses0-4ses-8ses-ses000000001",
+      "id": "0a85e3d4-c954-435a-b5e3-713ed4e74ac5",
       "name": "Verificar Sesión Validada (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        980,
-        180
+        1264,
+        368
       ],
       "alwaysOutputData": true,
-      "notes": "Exige un OTP usado=true en los últimos 20 min para esta cédula (mismo patrón que resetear-contrasena-correo.json) — sin esto, cualquiera con la cédula y la X-Api-Key podía crear el ticket saltándose el OTP.",
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
-      }
+      },
+      "notes": "Exige un OTP usado=true en los últimos 20 min para esta cédula (mismo patrón que resetear-contrasena-correo.json) — sin esto, cualquiera con la cédula y la X-Api-Key podía crear el ticket saltándose el OTP."
     },
     {
       "parameters": {
@@ -179,7 +177,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -196,13 +195,13 @@
         },
         "options": {}
       },
-      "id": "fses0002-ses0-4ses-8ses-ses000000002",
+      "id": "96c04533-52ac-40cb-8c51-7e0771bb2d19",
       "name": "¿Tiene sesión válida?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1240,
-        180
+        1520,
+        464
       ]
     },
     {
@@ -221,37 +220,36 @@
           }
         }
       },
-      "id": "fses0003-ses0-4ses-8ses-ses000000003",
+      "id": "5c0fde11-64a2-4f45-8c90-845d9d09361b",
       "name": "Responder: Sin sesión válida",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        340
+        1792,
+        624
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT id AS tipo_solicitud_id, nombre FROM tipos_solicitud WHERE codigo = $1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.tipoTramite ] }}"
         }
       },
-      "id": "f5555555-5555-4555-8555-555555555555",
+      "id": "9975e30f-7ef4-42a6-92d9-8415c731acc2",
       "name": "Buscar Tipo de Trámite (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        980,
-        -180
+        1264,
+        112
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -261,7 +259,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -278,37 +277,36 @@
         },
         "options": {}
       },
-      "id": "f6666666-6666-4666-8666-666666666666",
+      "id": "ce955426-8b1d-414c-adb7-7f13f1cb8736",
       "name": "¿Tipo de trámite válido?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1240,
-        -180
+        1520,
+        112
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT codigo, estado, creado_en FROM tickets WHERE estudiante_id = $1 AND tipo_solicitud_id = $2 AND estado IN ('Pendiente', 'En Proceso') ORDER BY creado_en DESC LIMIT 1",
         "options": {
           "queryReplacement": "={{ [ $('Buscar Estudiante (Postgres)').item.json.estudiante_id, $json.tipo_solicitud_id ] }}"
         }
       },
-      "id": "fdddddd1-dddd-4ddd-8ddd-ddddddddddd1",
+      "id": "86a9084f-c926-4815-ad34-aef808c8dc96",
       "name": "Buscar Solicitud Existente (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1500,
-        -180
+        1792,
+        112
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -318,7 +316,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -335,98 +334,95 @@
         },
         "options": {}
       },
-      "id": "fdddddd2-dddd-4ddd-8ddd-ddddddddddd2",
+      "id": "1f99ac63-9453-4b6a-bbde-9a986fa56a87",
       "name": "¿Ya existe solicitud activa?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1760,
-        -180
+        2048,
+        112
       ]
     },
     {
       "parameters": {
         "jsCode": "const MAPA_ESTADO = {\n  'Pendiente': 'EN_PROCESO',\n  'En Proceso': 'EN_PROCESO',\n  'Resuelto': 'COMPLETADO'\n};\n\nconst ticket = $json;\nconst fecha = new Date(ticket.creado_en);\nconst fechaSolicitud = fecha.toLocaleDateString('es-EC', {\n  year: 'numeric', month: 'long', day: '2-digit', timeZone: 'America/Guayaquil'\n});\n\nreturn [{\n  json: {\n    id: ticket.codigo,\n    tipo: $('Buscar Tipo de Trámite (Postgres)').item.json.nombre,\n    estado: MAPA_ESTADO[ticket.estado] || 'EN_PROCESO',\n    fechaSolicitud\n  }\n}];"
       },
-      "id": "fdddddd3-dddd-4ddd-8ddd-ddddddddddd3",
+      "id": "a3382130-08cf-40b1-8950-943e629175fc",
       "name": "Formatear Respuesta Existente",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2020,
-        60
+        2304,
+        352
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO tickets (tipo_solicitud_id, estudiante_id, carrera_id, nivel, paralelo, estado) VALUES ($1, $2, $3, $4, $5, 'Pendiente') RETURNING id, creado_en",
         "options": {
           "queryReplacement": "={{ [$('Buscar Tipo de Trámite (Postgres)').item.json.tipo_solicitud_id, $('Buscar Estudiante (Postgres)').item.json.estudiante_id, $('Buscar Estudiante (Postgres)').item.json.carrera_id, $('Buscar Estudiante (Postgres)').item.json.nivel, $('Buscar Estudiante (Postgres)').item.json.paralelo] }}"
         }
       },
-      "id": "f7777777-7777-4777-8777-777777777777",
+      "id": "d177064c-a74c-4dc7-a159-a9ef14b0b47f",
       "name": "Crear Ticket (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2020,
-        -180
+        2304,
+        112
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "UPDATE tickets SET codigo = 'TK-' || LPAD(id::text, 6, '0') WHERE id = $1 RETURNING id, codigo, estado, creado_en",
         "options": {
           "queryReplacement": "={{ [ $json.id ] }}"
         }
       },
-      "id": "f8888888-8888-4888-8888-888888888888",
+      "id": "ffcc2aca-4fc4-4877-802f-2160b91757a4",
       "name": "Generar Código (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1760,
-        -180
+        2048,
+        -48
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "UPDATE tickets SET responsable_id = (SELECT usuario_id FROM asignaciones_responsables WHERE tipo_solicitud_id = $1 AND (carrera_id = $2 OR carrera_id IS NULL) AND vigente = true ORDER BY carrera_id NULLS LAST LIMIT 1) WHERE id = $3 RETURNING id, responsable_id",
         "options": {
           "queryReplacement": "={{ [$('Buscar Tipo de Trámite (Postgres)').item.json.tipo_solicitud_id, $('Buscar Estudiante (Postgres)').item.json.carrera_id, $json.id] }}"
         }
       },
-      "id": "f9999999-9999-4999-8999-999999999999",
+      "id": "8b8827e3-e47c-4d22-9abf-9e5caa93f2a0",
       "name": "Asignar Responsable (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2020,
-        -180
+        2304,
+        -32
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -434,37 +430,36 @@
       "parameters": {
         "jsCode": "const ticket = $('Generar Código (Postgres)').item.json;\nconst asignacion = $json;\nconst tipoTramite = $('Webhook').item.json.body.tipoTramite;\n\nreturn [{\n  json: {\n    id: ticket.id,\n    codigo: ticket.codigo,\n    creado_en: ticket.creado_en,\n    responsable_id: asignacion.responsable_id ?? null,\n    payloadCreado: JSON.stringify({ tipo: tipoTramite, codigo: ticket.codigo, ticket_id: String(ticket.id) }),\n    payloadAsignado: JSON.stringify({ ticket_id: String(ticket.id), responsable_id: asignacion.responsable_id != null ? String(asignacion.responsable_id) : null })\n  }\n}];"
       },
-      "id": "faaaaaa1-aaaa-4aaa-8aaa-aaaaaaaaaaa1",
+      "id": "334c5f6d-a7a2-402c-9612-b44daef249fa",
       "name": "Preparar Eventos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2280,
-        -180
+        2560,
+        112
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT string_agg(correo, ',') AS \"correoResponsable\", string_agg(nombres, ', ') AS \"nombreResponsable\" FROM usuarios_panel WHERE rol_id = (SELECT rol_id FROM usuarios_panel WHERE id = $1)",
         "options": {
           "queryReplacement": "={{ [ $json.responsable_id ] }}"
         }
       },
-      "id": "fbbbbbb1-bbbb-4bbb-8bbb-bbbbbbbbbbb1",
+      "id": "58103c61-fc4d-4431-8cce-1cbf708dc8f7",
       "name": "Buscar Responsable (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2280,
-        60
+        2560,
+        352
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -474,7 +469,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -491,13 +487,13 @@
         },
         "options": {}
       },
-      "id": "fbbbbbb2-bbbb-4bbb-8bbb-bbbbbbbbbbb2",
+      "id": "0e02f0f3-97a1-4bfd-83ff-178dd7a60c81",
       "name": "¿Tiene responsable con correo?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        2540,
-        60
+        2832,
+        352
       ]
     },
     {
@@ -505,72 +501,70 @@
         "fromEmail": "mesadeayuda@yavirac.edu.ec",
         "toEmail": "={{ $json.correoResponsable }}",
         "subject": "=[{{ $('Generar Código (Postgres)').item.json.codigo }}] {{ $('Buscar Tipo de Trámite (Postgres)').item.json.nombre }}",
-        "emailFormat": "text",
         "text": "=🏫 INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO \"YAVIRAC\"\n\n📋 Nueva solicitud de {{ $('Buscar Tipo de Trámite (Postgres)').item.json.nombre }}\n\nEstimado/a {{ $json.nombreResponsable }},\n\nSe ha registrado una nueva solicitud que requiere tu atención:\n\nTicket: {{ $('Generar Código (Postgres)').item.json.codigo }}\nEstudiante: {{ $('Buscar Estudiante (Postgres)').item.json.nombres }} (cédula {{ $('Buscar Estudiante (Postgres)').item.json.cedula }})\nCarrera: {{ $('Buscar Estudiante (Postgres)').item.json.carrera }}, {{ $('Buscar Estudiante (Postgres)').item.json.nivel }} — Paralelo {{ $('Buscar Estudiante (Postgres)').item.json.paralelo }}\n\nCuando termines de procesar esta solicitud, simplemente responde este mismo correo (puedes adjuntar el PDF o la documentación correspondiente) — el sistema detecta tu respuesta automáticamente y marca el trámite como completado, sin que tengas que entrar a ningún otro sistema.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico de Turismo y Patrimonio \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec",
         "options": {}
       },
-      "id": "fbbbbbb3-bbbb-4bbb-8bbb-bbbbbbbbbbb3",
+      "id": "73d6be7b-af3c-47e5-9caa-59dba9869f2a",
       "name": "Enviar Aviso a Responsable (Correo)",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "onError": "continueRegularOutput",
       "position": [
-        2800,
-        60
+        3088,
+        352
       ],
-      "notes": "CONFIGURAR: credenciales SMTP. Notifica al responsable asignado (usuarios_panel.correo vía asignaciones_responsables) de la nueva solicitud, para que no dependa de revisar el panel manualmente. onError=continueRegularOutput: no debe afectar la creación del ticket ni la respuesta al webhook si el correo falla.",
+      "webhookId": "570f4eac-cba1-4b96-abaf-0e7a50c36ec2",
       "credentials": {
         "smtp": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales SMTP (Mailtrap en pruebas)"
+          "id": "l6S9HOD6VVVrILaz",
+          "name": "SMTP account"
         }
-      }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "CONFIGURAR: credenciales SMTP. Notifica al responsable asignado (usuarios_panel.correo vía asignaciones_responsables) de la nueva solicitud, para que no dependa de revisar el panel manualmente. onError=continueRegularOutput: no debe afectar la creación del ticket ni la respuesta al webhook si el correo falla."
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO eventos (tipo, payload, origen) VALUES ('TicketCreado', $1::jsonb, 'chatbot')",
         "options": {
           "queryReplacement": "={{ [ $json.payloadCreado ] }}"
         }
       },
-      "id": "faaaaaa2-aaaa-4aaa-8aaa-aaaaaaaaaaa2",
+      "id": "039b35e7-e85b-42f7-b485-c613abe4bb72",
       "name": "Registrar Evento Creado (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2540,
-        -180
+        2832,
+        112
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "INSERT INTO eventos (tipo, payload, origen) VALUES ('TicketAsignado', $1::jsonb, 'chatbot')",
         "options": {
           "queryReplacement": "={{ [ $('Preparar Eventos').item.json.payloadAsignado ] }}"
         }
       },
-      "id": "faaaaaa3-aaaa-4aaa-8aaa-aaaaaaaaaaa3",
+      "id": "410b8039-bfd2-44a0-bdff-b995f3822921",
       "name": "Registrar Evento Asignado (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2800,
-        -180
+        3088,
+        112
       ],
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -578,13 +572,13 @@
       "parameters": {
         "jsCode": "const ticket = $('Preparar Eventos').item.json;\nconst fecha = new Date(ticket.creado_en);\nconst fechaSolicitud = fecha.toLocaleDateString('es-EC', {\n  year: 'numeric', month: 'long', day: '2-digit', timeZone: 'America/Guayaquil'\n});\n\nreturn [{\n  json: {\n    id: ticket.codigo,\n    tipo: $('Buscar Tipo de Trámite (Postgres)').item.json.nombre,\n    estado: 'EN_PROCESO',\n    fechaSolicitud\n  }\n}];"
       },
-      "id": "faaaaaa4-aaaa-4aaa-8aaa-aaaaaaaaaaa4",
+      "id": "c4aeddd3-0ff6-4d13-8dc6-18baa86fa325",
       "name": "Formatear Respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3060,
-        -180
+        3344,
+        112
       ]
     },
     {
@@ -592,26 +586,26 @@
         "fromEmail": "mesadeayuda@yavirac.edu.ec",
         "toEmail": "={{ $('Buscar Estudiante (Postgres)').item.json.correoInstitucional }}",
         "subject": "=Confirmación de Solicitud — {{ $json.tipo }} | {{ $json.id }}",
-        "emailFormat": "text",
-        "options": {},
-        "text": "=🏫 INSTITUTO SUPERIOR TECNOLÓGICO \"YAVIRAC\"\n\n📋 Solicitud recibida\n\nEstimado/a estudiante,\n\nHemos recibido correctamente su solicitud de {{ $json.tipo }}.\n\n  • Número de ticket: {{ $json.id }}\n  • Tipo de trámite: {{ $json.tipo }}\n  • Estado actual: En proceso\n  • Fecha de solicitud: {{ $json.fechaSolicitud }}\n\nSu solicitud será procesada por el personal administrativo en un plazo de 3 a 5 días hábiles.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec"
+        "text": "=🏫 INSTITUTO SUPERIOR TECNOLÓGICO \"YAVIRAC\"\n\n📋 Solicitud recibida\n\nEstimado/a estudiante,\n\nHemos recibido correctamente su solicitud de {{ $json.tipo }}.\n\n  • Número de ticket: {{ $json.id }}\n  • Tipo de trámite: {{ $json.tipo }}\n  • Estado actual: En proceso\n  • Fecha de solicitud: {{ $json.fechaSolicitud }}\n\nSu solicitud será procesada por el personal administrativo en un plazo de 3 a 5 días hábiles.\n\n📱 Enviado desde la app móvil · YaviBot\nInstituto Superior Tecnológico \"YAVIRAC\" · Quito, Ecuador\nwww.yavirac.edu.ec",
+        "options": {}
       },
-      "id": "faaaaaa5-aaaa-4aaa-8aaa-aaaaaaaaaaa5",
+      "id": "11052e05-1ca6-4df5-8d8a-7ad320f395a5",
       "name": "Enviar Confirmación por Correo",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "onError": "continueRegularOutput",
       "position": [
-        3320,
-        -280
+        3600,
+        0
       ],
-      "notes": "CONFIGURAR: credenciales SMTP (Mailtrap para pruebas). onError=continueRegularOutput: si el SMTP falla (ej. rate limit de Mailtrap), no debe tumbar la respuesta al webhook — el ticket ya se guardó en la BD.",
+      "webhookId": "d542c956-ba3e-4619-99c2-895ccf7f3f30",
       "credentials": {
         "smtp": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales SMTP (Mailtrap en pruebas)"
+          "id": "l6S9HOD6VVVrILaz",
+          "name": "SMTP account"
         }
-      }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "CONFIGURAR: credenciales SMTP (Mailtrap para pruebas). onError=continueRegularOutput: si el SMTP falla (ej. rate limit de Mailtrap), no debe tumbar la respuesta al webhook — el ticket ya se guardó en la BD."
     },
     {
       "parameters": {
@@ -629,13 +623,13 @@
           }
         }
       },
-      "id": "faaaaaa6-aaaa-4aaa-8aaa-aaaaaaaaaaa6",
+      "id": "86746785-c54e-44b9-90c8-1511074f07d7",
       "name": "Responder: Ticket creado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        3320,
-        -80
+        3600,
+        208
       ]
     },
     {
@@ -654,13 +648,13 @@
           }
         }
       },
-      "id": "faaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "id": "9d592331-0637-47e5-ad52-a69e5235378e",
       "name": "Responder: Tipo inválido",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        160
+        1792,
+        448
       ]
     },
     {
@@ -679,16 +673,17 @@
           }
         }
       },
-      "id": "fbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "id": "449641ba-0c5c-4a8d-8fdc-fa30a5f82043",
       "name": "Responder: Estudiante no encontrado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        980,
-        260
+        1264,
+        544
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -896,8 +891,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Preparar Eventos": {
@@ -950,9 +944,18 @@
       ]
     }
   },
-  "pinData": {},
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "active": true
+  "versionId": "3b3f3b0e-2ea2-422b-9f7b-022006253723",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"
+  },
+  "nodeGroups": [],
+  "id": "dFniajTpPYAHCXXV",
+  "tags": []
 }

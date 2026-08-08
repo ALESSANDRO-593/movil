@@ -7,36 +7,36 @@
         "height": 420,
         "width": 380
       },
-      "id": "a1111111-1111-4111-8111-111111111111",
+      "id": "69ac58d4-6ec9-48d1-86cf-7ebd506d816b",
       "name": "Nota",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -200,
-        -140
+        -768,
+        288
       ]
     },
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "consultar-estudiante",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
-        "options": {},
-        "authentication": "headerAuth"
+        "options": {}
       },
-      "id": "a2222222-2222-4222-8222-222222222222",
+      "id": "1c0f2a38-ddd3-46a2-98ec-3e29e2ce3fdc",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        0
+        -368,
+        432
       ],
       "webhookId": "consultar-estudiante",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credencial Header Auth (X-Api-Key)"
+          "id": "2DZ4rVKO8WKxzYBC",
+          "name": "API Key App Certificado"
         }
       }
     },
@@ -47,20 +47,19 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "a7777777-7777-4777-8777-777777777777",
+      "id": "983308b8-f6dd-4fb4-b8c2-ecad4dd2c5c7",
       "name": "Webhook (OPTIONS)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        200,
-        300
+        -368,
+        720
       ],
       "webhookId": "consultar-estudiante-options"
     },
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "",
         "options": {
           "responseCode": 204,
           "responseHeaders": {
@@ -81,13 +80,13 @@
           }
         }
       },
-      "id": "a8888888-8888-4888-8888-888888888888",
+      "id": "30d7f640-cd29-42fe-98a4-3d7082748300",
       "name": "Responder: CORS preflight",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        460,
-        300
+        -96,
+        720
       ]
     },
     {
@@ -100,7 +99,7 @@
           "parameters": [
             {
               "name": "secret",
-              "value": "RECAPTCHA_SECRET_CONFIGURAR_EN_N8N"
+              "value": "6Lel2HotAAAAAPUTVBPJkzUlOohrcT4G4j-j9NXR"
             },
             {
               "name": "response",
@@ -110,15 +109,15 @@
         },
         "options": {}
       },
-      "id": "acaptch1-1111-4111-8111-111111111111",
+      "id": "cafb9c0e-4395-45bd-bd77-38e96da1669a",
       "name": "Verificar CAPTCHA (Google)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "onError": "continueRegularOutput",
       "position": [
-        300,
-        -260
+        -256,
+        160
       ],
+      "onError": "continueRegularOutput",
       "notes": "La Secret Key de reCAPTCHA debe configurarse únicamente en n8n y nunca almacenarse en Git."
     },
     {
@@ -127,7 +126,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -144,13 +144,13 @@
         },
         "options": {}
       },
-      "id": "acaptch2-2222-4222-8222-222222222222",
+      "id": "bb91db39-4ac5-4931-83b6-c883c9d0336b",
       "name": "¿CAPTCHA válido?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        560,
-        -260
+        0,
+        160
       ]
     },
     {
@@ -169,37 +169,36 @@
           }
         }
       },
-      "id": "acaptch3-3333-4333-8333-333333333333",
+      "id": "8e9afd29-9bc3-48e9-9bbe-41f9bc18c8c8",
       "name": "Responder: CAPTCHA inválido",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        560,
-        -420
+        0,
+        0
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT e.cedula, e.nombres, e.correo AS \"correoInstitucional\", c.nombre AS carrera, e.nivel, e.estado_matricula AS \"estadoMatricula\", p.nombre AS \"periodoActual\" FROM estudiantes e JOIN carreras c ON c.id = e.carrera_id LEFT JOIN periodos_academicos p ON p.vigente = true WHERE e.cedula = $1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.cedula ] }}"
         }
       },
-      "id": "a3333333-3333-4333-8333-333333333333",
+      "id": "a4638010-b20e-4512-a11a-7727c323f70d",
       "name": "Buscar Estudiante (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        460,
-        0
+        -96,
+        432
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -209,7 +208,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 1
           },
           "conditions": [
             {
@@ -226,13 +226,13 @@
         },
         "options": {}
       },
-      "id": "a4444444-4444-4444-8444-444444444444",
+      "id": "227402a1-2416-4eb4-933f-a0705e5b6af2",
       "name": "¿Existe el estudiante?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        720,
-        0
+        160,
+        432
       ]
     },
     {
@@ -251,37 +251,36 @@
           }
         }
       },
-      "id": "a5555555-5555-4555-8555-555555555555",
+      "id": "43c0b066-7f96-4e29-90bc-86f94d79441b",
       "name": "Responder: Encontrado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        980,
-        -220
+        432,
+        208
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "resource": "database",
         "query": "SELECT cedula, nombre_docente AS nombres, correo AS \"correoInstitucional\" FROM docentes WHERE cedula = $1",
         "options": {
           "queryReplacement": "={{ [ $('Webhook').item.json.body.cedula ] }}"
         }
       },
-      "id": "a9999999-9999-4999-8999-999999999999",
+      "id": "1b996120-4e13-429c-ba2e-122aea7ba681",
       "name": "Buscar Docente (Postgres)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        980,
-        60
+        432,
+        480
       ],
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "REEMPLAZAR",
-          "name": "REEMPLAZAR con credenciales reales"
+          "id": "JLa71HK5Hh0dITa4",
+          "name": "YaviBot PostgreSQL - Servidor"
         }
       }
     },
@@ -291,7 +290,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -308,13 +308,13 @@
         },
         "options": {}
       },
-      "id": "aaaaaaa1-aaaa-4aaa-8aaa-aaaaaaaaaaa1",
+      "id": "94826eca-e9aa-4ca5-bc00-dbe56743d743",
       "name": "¿Existe el docente?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1240,
-        60
+        688,
+        480
       ]
     },
     {
@@ -333,13 +333,13 @@
           }
         }
       },
-      "id": "aaaaaaa2-aaaa-4aaa-8aaa-aaaaaaaaaaa2",
+      "id": "918beae8-ec37-4577-a48f-2f72780339d1",
       "name": "Responder: Encontrado Docente",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        -20
+        944,
+        400
       ]
     },
     {
@@ -358,16 +358,17 @@
           }
         }
       },
-      "id": "a6666666-6666-4666-8666-666666666666",
+      "id": "dd47cf75-4a03-4502-bf82-b06e04a97a3e",
       "name": "Responder: No encontrado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1500,
-        160
+        944,
+        592
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -479,9 +480,18 @@
       ]
     }
   },
-  "pinData": {},
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "active": true
+  "versionId": "f36dea8e-fc17-4472-a33a-34ca83a97dbf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"
+  },
+  "nodeGroups": [],
+  "id": "BJ9FNcT9D0WR0qKY",
+  "tags": []
 }
