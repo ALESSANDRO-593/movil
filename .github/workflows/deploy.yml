@@ -1,0 +1,62 @@
+name: CD - Deploy YaviBot VPS
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "certi-matricula-app/**"
+      - ".github/workflows/deploy.yml"
+
+jobs:
+  deploy:
+    name: Desplegar frontend en VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar llave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/yavibot_vps
+          chmod 600 ~/.ssh/yavibot_vps
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Copiar frontend al VPS
+        run: |
+          rsync -avz \
+            --exclude "node_modules" \
+            --exclude "www" \
+            --exclude "src/environments/environment.ts" \
+            --exclude "src/environments/environment.prod.ts" \
+            -e "ssh -i ~/.ssh/yavibot_vps" \
+            certi-matricula-app/ \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/yavibot/certi-matricula-app/"
+
+      - name: Construir y desplegar YaviBot
+        run: |
+          ssh -i ~/.ssh/yavibot_vps \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << 'EOF'
+            set -e
+
+            cd /opt/yavibot/certi-matricula-app
+
+            docker build -t yavibot-frontend .
+
+            docker compose \
+              -f docker-compose.server.yml \
+              up -d --force-recreate
+
+            docker compose \
+              -f docker-compose.server.yml \
+              ps
+
+            curl -fsS \
+              https://app-161-97-100-110.nip.io \
+              > /dev/null
+
+            echo "YaviBot desplegado correctamente"
+          EOF
