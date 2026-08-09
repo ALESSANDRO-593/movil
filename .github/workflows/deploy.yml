@@ -67,7 +67,7 @@ jobs:
             --show-error \
             --retry 5 \
             --retry-delay 3 \
-            https://app-161-97-100-110.nip.io/chat \
+            https://app-161-97-100-110.nip.io/ \
             > /dev/null
 
           echo "✅ YaviBot desplegado correctamente"
