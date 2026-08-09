@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Capacitor } from '@capacitor/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, delay, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -117,7 +118,14 @@ export class EstudianteService {
     }
 
     return this.http
-      .post<Usuario>(`${environment.n8nBaseUrl}/consultar-estudiante`, { cedula, captchaToken })
+      .post<Usuario>(
+        `${environment.n8nBaseUrl}/consultar-estudiante`,
+        {
+          cedula,
+          captchaToken,
+          plataforma: Capacitor.getPlatform()
+        }
+      )
       .pipe(map(usuario => usuario ?? null));
   }
 

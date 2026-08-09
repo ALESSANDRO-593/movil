@@ -20,7 +20,6 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "consultar-laboratorios",
-        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -32,13 +31,7 @@
         432,
         144
       ],
-      "webhookId": "consultar-laboratorios",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "2DZ4rVKO8WKxzYBC",
-          "name": "API Key App Certificado"
-        }
-      }
+      "webhookId": "consultar-laboratorios"
     },
     {
       "parameters": {
@@ -202,7 +195,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "683d3f0c-0abf-4fe5-bc32-07d4d9e017b8",
+  "versionId": "86dfb3f7-b047-46d4-aa90-bb90e411fa1c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"

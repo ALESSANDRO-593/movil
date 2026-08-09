@@ -20,7 +20,6 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "enviar-ticket-verificacion",
-        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -32,13 +31,7 @@
         -784,
         464
       ],
-      "webhookId": "enviar-ticket-verificacion",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "2DZ4rVKO8WKxzYBC",
-          "name": "API Key App Certificado"
-        }
-      }
+      "webhookId": "enviar-ticket-verificacion"
     },
     {
       "parameters": {
@@ -549,7 +542,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "9dddca90-0272-4e9d-b069-c26caf6ae981",
+  "versionId": "6b024ccc-a5e6-46df-854c-a88e6314d86e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"

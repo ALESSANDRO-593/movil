@@ -20,7 +20,6 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "enviar-certificado-pdf",
-        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -32,13 +31,7 @@
         -752,
         48
       ],
-      "webhookId": "enviar-certificado-pdf",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "2DZ4rVKO8WKxzYBC",
-          "name": "API Key App Certificado"
-        }
-      }
+      "webhookId": "enviar-certificado-pdf"
     },
     {
       "parameters": {
@@ -431,7 +424,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "ee2c9ae8-e2e2-41f9-be52-f3d913dbd611",
+  "versionId": "49a75dcf-438f-406e-83d3-574c917495a8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"

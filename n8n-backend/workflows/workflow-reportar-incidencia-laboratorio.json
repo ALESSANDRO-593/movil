@@ -20,7 +20,6 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "reportar-incidencia-laboratorio",
-        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -32,13 +31,7 @@
         -1824,
         432
       ],
-      "webhookId": "reportar-incidencia-laboratorio",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "2DZ4rVKO8WKxzYBC",
-          "name": "API Key App Certificado"
-        }
-      }
+      "webhookId": "reportar-incidencia-laboratorio"
     },
     {
       "parameters": {
@@ -1042,7 +1035,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "369bd13c-3c9b-46ea-abcb-e032d301a49e",
+  "versionId": "c5201a92-9f9d-4d63-a564-9b58ebcd2a2d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "94c51ee80c1475a5314523807522355a29774486df7cde5a19b6c33ceea740d9"
